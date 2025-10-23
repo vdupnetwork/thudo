@@ -46,11 +46,40 @@ const useMediaQuery = (query: string): boolean => {
     };
   }, [query, matches]);
 
+  // FIX: The hook was returning 'isMobile', which is not defined in this scope. It should return the 'matches' state variable.
   return matches;
 };
 
 
 const App: React.FC = () => {
+  const apiKey = (typeof process !== 'undefined' && process.env && process.env.API_KEY) ? process.env.API_KEY : null;
+
+  if (!apiKey) {
+    return (
+      <div className="font-sans w-screen h-screen flex items-center justify-center bg-red-50 text-red-800 p-8">
+        <div className="text-center max-w-lg">
+          <h1 className="text-3xl font-serif font-bold mb-3">Lỗi Cấu Hình Môi Trường</h1>
+          <p className="text-lg">
+            Không tìm thấy khóa API cần thiết để ứng dụng hoạt động.
+          </p>
+          <div className="mt-6 text-left bg-red-100 p-4 rounded-lg text-base">
+            <p className="font-semibold">Để khắc phục lỗi này trên Vercel:</p>
+            <ol className="list-decimal list-inside mt-2 space-y-1">
+              <li>Đi đến bảng điều khiển dự án Vercel của bạn.</li>
+              <li>Vào tab <strong>Settings</strong> &rarr; <strong>Environment Variables</strong>.</li>
+              <li>Thêm một biến mới có tên <code className="bg-red-200 px-1 py-0.5 rounded">API_KEY</code>.</li>
+              <li>Dán khóa API của bạn vào ô giá trị.</li>
+              <li>Lưu lại và triển khai lại (redeploy) dự án của bạn.</li>
+            </ol>
+          </div>
+          <p className="mt-4 text-sm text-red-600">
+            Ứng dụng sẽ không hoạt động cho đến khi biến môi trường này được cấu hình đúng cách.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const [modelImageUrl, setModelImageUrl] = useState<string | null>(null);
   const [outfitHistory, setOutfitHistory] = useState<OutfitLayer[]>([]);
   const [currentOutfitIndex, setCurrentOutfitIndex] = useState(0);
