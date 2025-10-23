@@ -3,12 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { SparklesCore } from "./sparkles";
+import React, { useState, useEffect, useRef, useCallback, lazy, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { DotsVerticalIcon } from "../icons";
  
+const SparklesCore = lazy(() => import("./sparkles"));
+const MemoizedSparklesCore = React.memo(SparklesCore);
+
 interface CompareProps {
   firstImage?: string;
   secondImage?: string;
@@ -40,7 +42,6 @@ export const Compare = ({
  
   const [isMouseOver, setIsMouseOver] = useState(false);
  
-  // FIX: Use ReturnType<typeof setTimeout> for browser compatibility instead of NodeJS.Timeout
   const autoplayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
  
   const startAutoplay = useCallback(() => {
@@ -182,14 +183,16 @@ export const Compare = ({
           <div className="w-36 h-full [mask-image:radial-gradient(100px_at_left,white,transparent)] absolute top-1/2 -translate-y-1/2 left-0 bg-gradient-to-r from-indigo-400 via-transparent to-transparent z-20 opacity-50" />
           <div className="w-10 h-1/2 [mask-image:radial-gradient(50px_at_left,white,transparent)] absolute top-1/2 -translate-y-1/2 left-0 bg-gradient-to-r from-cyan-400 via-transparent to-transparent z-10 opacity-100" />
           <div className="w-10 h-3/4 top-1/2 -translate-y-1/2 absolute -right-10 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
-            <MemoizedSparklesCore
-              background="transparent"
-              minSize={0.4}
-              maxSize={1}
-              particleDensity={1200}
-              className="w-full h-full"
-              particleColor="#FFFFFF"
-            />
+            <Suspense fallback={<div className="w-full h-full" />}>
+                <MemoizedSparklesCore
+                background="transparent"
+                minSize={0.4}
+                maxSize={1}
+                particleDensity={1200}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+                />
+            </Suspense>
           </div>
           {showHandlebar && (
             <div className="h-5 w-5 rounded-md top-1/2 -translate-y-1/2 bg-white z-30 -right-2.5 absolute flex items-center justify-center border border-gray-300/80">
@@ -241,5 +244,3 @@ export const Compare = ({
     </div>
   );
 };
- 
-const MemoizedSparklesCore = React.memo(SparklesCore);

@@ -44,9 +44,8 @@ const useMediaQuery = (query: string): boolean => {
     return () => {
       mediaQueryList.removeEventListener('change', listener);
     };
-  }, [query, matches]);
+  }, [query]);
 
-  // FIX: The hook was returning 'isMobile', which is not defined in this scope. It should return the 'matches' state variable.
   return matches;
 };
 
@@ -174,7 +173,8 @@ const App: React.FC = () => {
         return [...prev, garmentInfo];
       });
     } catch (err) {
-      setError(getFriendlyErrorMessage(String(err), 'Không thể mặc trang phục'));
+      // FIX: Pass the raw error object to getFriendlyErrorMessage for better error handling.
+      setError(getFriendlyErrorMessage(err, 'Không thể mặc trang phục'));
     } finally {
       setIsLoading(false);
       setLoadingMessage('');
@@ -218,8 +218,8 @@ const App: React.FC = () => {
         return newHistory;
       });
     } catch (err) {
-      // FIX: The error from a catch block is of type 'unknown'. Safely convert it to a string before processing.
-      setError(getFriendlyErrorMessage(String(err), 'Không thể đổi dáng'));
+      // FIX: Pass the raw error object to getFriendlyErrorMessage for better error handling.
+      setError(getFriendlyErrorMessage(err, 'Không thể đổi dáng'));
       setCurrentPoseIndex(prevPoseIndex);
     } finally {
       setIsLoading(false);

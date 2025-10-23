@@ -22,7 +22,7 @@ type ParticlesProps = {
   particleColor?: string;
   particleDensity?: number;
 };
-export const SparklesCore = (props: ParticlesProps) => {
+const SparklesCore = (props: ParticlesProps) => {
   const {
     id,
     className,
@@ -436,3 +436,4 @@ export const SparklesCore = (props: ParticlesProps) => {
     </motion.div>
   );
 };
+export default SparklesCore;
